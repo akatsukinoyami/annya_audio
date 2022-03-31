@@ -7,7 +7,7 @@ from client import Client
 app = Client()
 
 
-@app.on_message(filters.user(app.working_chat) & filters.command(["link"]))
+@app.on_message(filters.user(app.katsu) & filters.command(["link"]))
 async def import_link(app, msg):
     text = msg.text.split("\n")
     db = app.load()
@@ -19,7 +19,7 @@ async def import_link(app, msg):
             logging.warning(f" added link {text[i]}")
 
 
-@app.on_message(filters.user(app.working_chat) & filters.command(["send_links"]))
+@app.on_message(filters.user(app.katsu) & filters.command(["send_links"]))
 async def send_links(app, msg):
     await msg.reply_document(f"{os.getcwd()}/{app.db}")
     logging.warning("sent links to user")
