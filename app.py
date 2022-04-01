@@ -16,6 +16,7 @@ async def import_link(app, msg):
             db["unsent"].append({"link": text[i], "tags": text[i + 1]})
             app.dump(db)
 
+            await msg.reply(f"Acqiured link: {text[i]}\nwith tags: {text[i + 1]}")
             logging.warning(f" added link {text[i]}")
 
 
@@ -23,6 +24,12 @@ async def import_link(app, msg):
 async def send_links(app, msg):
     await msg.reply_document(f"{os.getcwd()}/{app.db}")
     logging.warning("sent links to user")
+
+
+@app.on_message(filters.user(app.katsu) & filters.command(["make_job"]))
+async def send_links(_, msg):
+    await msg.reply(f"Manually send post to channel.")
+    send_asmr()
 
 
 def download_audio(link, tags):
@@ -47,7 +54,7 @@ def format_audio(mp4):
     return mp3
 
 
-def send_audio():
+def send_asmr():
     db = app.load()
     unsent = db["unsent"]
     try:
@@ -69,7 +76,7 @@ def send_audio():
 
 def scheduler_start():
     aps = AsyncIOScheduler()
-    aps.add_job(send_audio, "interval", hours=3)
+    aps.add_job(send_asmr, "interval", hours=3, id="send_asmr")
     aps.start()
 
 
