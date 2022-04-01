@@ -1,3 +1,5 @@
+wheel
+
 # Telegram
 pyrogram==1.4.7
 tgcrypto==1.2.3
