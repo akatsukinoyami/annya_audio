@@ -70,10 +70,10 @@ def send_asmr():
         app.send_audio(chat_id=app.working_chat, caption=text, audio=path)
 
         os.remove(path)
+        db["sent"].append(audio)
     except IndexError as e:
         print(e)
     finally:
-        db["sent"].append(audio)
         db["unsent"] = unsent
         app.dump(db)
 
