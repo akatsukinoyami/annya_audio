@@ -8,7 +8,7 @@ app = Client()
 
 
 @app.on_message(filters.user(app.katsu) & filters.command(["link"]))
-async def import_link(app, msg):
+def import_link(app, msg):
     text = msg.text.split("\n")
     db = app.load()
     for i in range(len(text) - 1):
@@ -16,7 +16,7 @@ async def import_link(app, msg):
             db["unsent"].append({"link": text[i], "tags": text[i + 1]})
             app.dump(db)
 
-            await msg.reply(
+            msg.reply(
                 f"Acqiured link: {text[i]}\nwith tags: {text[i + 1]}",
                 disable_web_page_preview=True,
                 disable_notification=True,
@@ -25,14 +25,14 @@ async def import_link(app, msg):
 
 
 @app.on_message(filters.user(app.katsu) & filters.command(["send_links"]))
-async def send_links(app, msg):
-    await msg.reply_document(f"{os.getcwd()}/{app.db}")
+def send_links(app, msg):
+    msg.reply_document(f"{os.getcwd()}/{app.db}")
     logging.warning("sent links to user")
 
 
 @app.on_message(filters.user(app.katsu) & filters.command(["make_job"]))
-async def send_links(_, msg):
-    await msg.reply(f"Manually send post to channel.")
+def send_links(_, msg):
+    msg.reply(f"Manually send post to channel.")
     send_asmr()
 
 
