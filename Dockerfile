@@ -1,7 +1,6 @@
-FROM python:3.11.0a6-alpine3.15
+FROM python:slim-buster
 WORKDIR /app
-RUN apk add -q --progress --update --no-cache ffmpeg gcc
-RUN python3 -m pip install --upgrade pip
+RUN apt install ffmpeg
 COPY ./requirements.txt .
 RUN python3 -m pip install -r requirements.txt
 COPY . .
