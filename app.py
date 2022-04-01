@@ -16,7 +16,11 @@ async def import_link(app, msg):
             db["unsent"].append({"link": text[i], "tags": text[i + 1]})
             app.dump(db)
 
-            await msg.reply(f"Acqiured link: {text[i]}\nwith tags: {text[i + 1]}")
+            await msg.reply(
+                f"Acqiured link: {text[i]}\nwith tags: {text[i + 1]}",
+                disable_web_page_preview=True,
+                disable_notification=True,
+            )
             logging.warning(f" added link {text[i]}")
 
 

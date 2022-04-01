@@ -5,7 +5,7 @@ from os import getenv as env
 from pyrogram import Client, filters
 
 dotenv.load_dotenv()
-coloredlogs.install(level="INFO")
+coloredlogs.install(level="WARNING")
 
 
 class Client(Client):
