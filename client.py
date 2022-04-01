@@ -12,7 +12,7 @@ class Client(Client):
     working_chat = -1001460724046
     katsu = 600432868
     filters = filters
-    session_name = "asmr_autosend"
+    session_name = "service/asmr_autosend"
     db = session_name + ".yml"
 
     def __init__(self):

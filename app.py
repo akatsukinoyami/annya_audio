@@ -16,23 +16,26 @@ def import_link(app, msg):
             db["unsent"].append({"link": text[i], "tags": text[i + 1]})
             app.dump(db)
 
+            txt = f" Acqiured link: {text[i]}\nwith tags: {text[i + 1]}"
             msg.reply(
-                f"Acqiured link: {text[i]}\nwith tags: {text[i + 1]}",
+                txt,
                 disable_web_page_preview=True,
                 disable_notification=True,
             )
-            logging.warning(f" added link {text[i]}")
+            logging.warning(txt)
 
 
 @app.on_message(filters.user(app.katsu) & filters.command(["send_links"]))
 def send_links(app, msg):
     msg.reply_document(f"{os.getcwd()}/{app.db}")
-    logging.warning("sent links to user")
+    logging.warning("Sent links to user")
 
 
 @app.on_message(filters.user(app.katsu) & filters.command(["make_job"]))
 def send_links(_, msg):
-    msg.reply(f"Manually send post to channel.")
+    text = " Manually send post to channel."
+    msg.reply(text)
+    logging.warning(text)
     send_asmr()
 
 
@@ -42,20 +45,22 @@ def download_audio(link, tags):
     text = f"<a href='{link}'>{vid.title}</a>\n{tags}\n{vid.author}\n\n@katsu_asmr"
     logging.info(f" down video {vid.title} from {vid.author}")
 
-    return path, text
+    return path, text, vid.title, vid.author
+
+
+add_quotes = lambda x: x.replace("/", '"/"')[1:] + '"'
+rm_quotes = lambda x: x.replace('"', "")
 
 
 def format_audio(mp4):
-    mp4 = mp4.replace("/", '"/"')[1:] + '"'
+    mp4 = add_quotes(mp4)
     mp3 = mp4.replace(".mp4", ".mp3")
 
     ffmpeg = f"ffmpeg -i {mp4} {mp3}"
     subprocess.call(ffmpeg, shell=True)
 
-    mp3 = mp3.replace('"', "")
-    mp4 = mp4.replace('"', "")
-    os.remove(mp4)
-    return mp3
+    os.remove(rm_quotes(mp4))
+    return rm_quotes(mp3)
 
 
 def send_asmr():
@@ -64,7 +69,10 @@ def send_asmr():
     try:
         random.shuffle(unsent)
         audio = unsent.pop()
-        path, text = download_audio(audio["link"], audio["tags"])
+        path, text, title, author = download_audio(audio["link"], audio["tags"])
+        audio["title"] = title
+        audio["author"] = author
+
         path = format_audio(path)
 
         app.send_audio(chat_id=app.working_chat, caption=text, audio=path)
